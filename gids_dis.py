@@ -35,11 +35,17 @@ U_MISS = ['000', '007', '008', '00D', '00E', '014', '015', '016', '017', '041', 
 # UNIQUE = ['000', '007', '008', '00D', '00E', '014', '015', '016', '017', '041', '055', '056', '05B', '05C', '05D', 'NO']
 SET = {'000', '007', '008', '00D', '00E', '014', '015', '016', 
 			'017', '041', '055', '056', '05B', '05C', '05D'}
+VALID_IDS = ['007', '008', '00D', '00E', '014', '015', '016', '017', '041', '055', '056', '05B', '05C', '05D']
 
 def one_hot_encoded(values):
 	# Todos os outros vão em NO
 	dummies = pd.get_dummies([x if x in SET else '000' for x in values], dtype=np.float32)
 	return dummies.reindex(columns=U_MISS, fill_value=0.0)
+
+def one_hot_encoded_to_tensor(valores):
+	entrada = one_hot_encoded(valores).values
+	entrada = torch.tensor(entrada, dtype=torch.float32).transpose(0,1)
+	return torch.stack([entrada])
 
 def get_information(frame):
 	hot = one_hot_encoded(frame['ID'].values).values
